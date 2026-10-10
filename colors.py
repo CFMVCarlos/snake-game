@@ -19,6 +19,17 @@ def change_color(
 
     Significantly faster than O(W*H) pixel-by-pixel iterations in Python.
 
+    Parameters
+    ----------
+    surface : pygame.Surface
+        The surface to modify.
+    color : tuple[int, ...]
+        The color to add.
+    width : int
+        The width of the area.
+    height : int
+        The height of the area.
+
     Returns
     -------
     pygame.Surface

@@ -1,3 +1,5 @@
+"""Sprites for the game."""
+
 import pygame
 
 import colors
@@ -10,44 +12,76 @@ CELL_SIZE = 64
 
 
 class FoodSprite(pygame.sprite.Sprite):
-    def __init__(self, food: Food, WIDTH, HEIGHT, SCALE):
+    """
+    Sprite representing food in the game.
+
+    Parameters
+    ----------
+    food : Food
+        The food object to represent.
+    width : int
+        The width of the board.
+    height : int
+        The height of the board.
+    scale : int
+        The scale of the game.
+    """
+
+    def __init__(self, food: Food, width: int, height: int, scale: int) -> None:
         super().__init__()
 
-        SNAKE_SPRITESHEET = SpriteSheet("snake-graphics.png")
+        snake_spritesheet = SpriteSheet("snake-graphics.png")
 
         self.food = food
-        self.SCALE = SCALE
+        self.scale = scale
 
-        food_image_rect = (0, 3 * CELL_SIZE, CELL_SIZE, CELL_SIZE)  # apple at position (0,3)
-        self.food_image = SNAKE_SPRITESHEET.image_at(food_image_rect, -1)  # Gets the apple image
-        self.food_image = pygame.transform.scale(self.food_image, (SCALE, SCALE))
+        food_image_rect = (0, 3 * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+        self.food_image = snake_spritesheet.image_at(food_image_rect, -1)
+        self.food_image = pygame.transform.scale(self.food_image, (scale, scale))
 
-        self.image = pygame.Surface([WIDTH * SCALE, HEIGHT * SCALE])  # Creates a surface
-        self.rect = self.image.get_rect()  # gets rect from surface
-        self.update()  # Draw apple in screen
+        self.image = pygame.Surface([width * scale, height * scale], pygame.SRCALPHA)
+        self.rect = self.image.get_rect()
+        self.update()
 
-    def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+    def update(self) -> None:
+        """Update the sprite's image."""
+        self.image.fill((0, 0, 0, 0))
 
-        # Render Food
         self.image.blit(
             self.food_image,
-            (self.SCALE * self.food.pos[0], self.SCALE * self.food.pos[1]),
+            (self.scale * self.food.pos[0], self.scale * self.food.pos[1]),
         )
 
 
 class SnakeSprite(pygame.sprite.Sprite):
-    def __init__(self, snake: Snake, WIDTH, HEIGHT, SCALE):
+    """
+    Sprite representing a snake in the game.
+
+    Parameters
+    ----------
+    snake : Snake
+        The snake object to represent.
+    width : int
+        The width of the board.
+    height : int
+        The height of the board.
+    scale : int
+        The scale of the game.
+    """
+
+    def __init__(self, snake: Snake, width: int, height: int, scale: int) -> None:
         super().__init__()
 
-        SNAKE_SPRITESHEET = SpriteSheet("snake-graphics.png")
+        snake_spritesheet = SpriteSheet("snake-graphics.png")
 
         self.snake = snake
-        self.SCALE = SCALE
-        SNAKE_SPRITESHEET.set_snake_color(snake.color, 5 * CELL_SIZE, 4 * CELL_SIZE)
+        self.scale = scale
+        if snake.color:
+            snake_spritesheet.set_snake_color(snake.color, 5 * CELL_SIZE, 4 * CELL_SIZE)
 
-        snake_map = {
+        snake_map: dict[
+            tuple[str, Directions] | tuple[Directions, Directions], tuple[int, int],
+        ] = {
             ("head", Directions.UP): (3, 0),
             ("head", Directions.RIGHT): (4, 0),
             ("head", Directions.LEFT): (3, 1),
@@ -70,72 +104,101 @@ class SnakeSprite(pygame.sprite.Sprite):
             ("tail", Directions.LEFT): (4, 2),
         }
 
-        # Load and resize images to SCALE
         self.snake_images = {
             name: pygame.transform.scale(
-                SNAKE_SPRITESHEET.image_at(
+                snake_spritesheet.image_at(
                     (a * CELL_SIZE, b * CELL_SIZE, CELL_SIZE, CELL_SIZE), -1,
                 ),
-                (SCALE, SCALE),
+                (scale, scale),
             )
             for (name, (a, b)) in snake_map.items()
         }
 
-        self.image = pygame.Surface([WIDTH * SCALE, HEIGHT * SCALE])
-        self.image = colors.change_color(self.image, self.snake.color, WIDTH * SCALE, HEIGHT * SCALE)
+        self.image = pygame.Surface([width * scale, height * scale], pygame.SRCALPHA)
+        if self.snake.color:
+            self.image = colors.change_color(
+                self.image, self.snake.color, width * scale, height * scale,
+            )
         self.update()
         self.rect = self.image.get_rect()
 
-    def update(self):
-        self.image.fill("white")
-        self.image.set_colorkey("white")
+    @staticmethod
+    def _get_direction(x: int, y: int, prev_x: int, prev_y: int) -> Directions:
+        """
+        Calculate the direction from the previous point to the current point.
 
-        # Render snake
+        Parameters
+        ----------
+        x : int
+            Current x coordinate.
+        y : int
+            Current y coordinate.
+        prev_x : int
+            Previous x coordinate.
+        prev_y : int
+            Previous y coordinate.
 
-        def get_direction(x, y, prev_x, prev_y):
-            """Given 2 coordinates returns direction taken."""
-            dir = None
-            if x - prev_x == 1:
-                dir = Directions.RIGHT
-            elif x - prev_x == -1:
-                dir = Directions.LEFT
-            elif y - prev_y == 1:
-                dir = Directions.DOWN
-            elif y - prev_y == -1:
-                dir = Directions.UP
-            if x - prev_x > 1:
-                dir = Directions.LEFT
-            elif x - prev_x < -1:
-                dir = Directions.RIGHT
-            elif y - prev_y > 1:
-                dir = Directions.UP
-            elif y - prev_y < -1:
-                dir = Directions.DOWN
-            return dir
+        Returns
+        -------
+        Directions
+            The calculated direction.
+        """
+        direction = Directions.RIGHT
+        if x - prev_x == 1:
+            direction = Directions.RIGHT
+        elif x - prev_x == -1:
+            direction = Directions.LEFT
+        elif y - prev_y == 1:
+            direction = Directions.DOWN
+        elif y - prev_y == -1:
+            direction = Directions.UP
 
-        # Get Head
+        # Wrap around handling
+        if x - prev_x > 1:
+            direction = Directions.LEFT
+        elif x - prev_x < -1:
+            direction = Directions.RIGHT
+        elif y - prev_y > 1:
+            direction = Directions.UP
+        elif y - prev_y < -1:
+            direction = Directions.DOWN
+
+        return direction
+
+    def update(self) -> None:
+        """Update the sprite's image."""
+        self.image.fill((0, 0, 0, 0))
+
+        if not self.snake.snake_body:
+            return
+
         prev_x, prev_y = self.snake.snake_body[0]
         prev_dir = None
 
-        # Walk from 1st body position towards tail
         for x, y in self.snake.snake_body[1:]:
-
-            dir = get_direction(x, y, prev_x, prev_y)
+            direction = self._get_direction(x, y, prev_x, prev_y)
+            image_key: tuple[str, Directions] | tuple[Directions, Directions]
             if prev_dir is None:
-                image = ("head", self.snake.direction)
+                image_key = ("head", self.snake.direction)
             else:
-                image = (prev_dir, dir)
+                image_key = (prev_dir, direction)
 
-            # blit previous body part now that we now directions taken
             self.image.blit(
-                self.snake_images[image], (self.SCALE * prev_x, self.SCALE * prev_y),
+                self.snake_images[image_key],
+                (self.scale * prev_x, self.scale * prev_y),
             )
 
             prev_x, prev_y = x, y
-            prev_dir = dir
+            prev_dir = direction
 
-        # Finally blit tail
-        self.image.blit(
-            self.snake_images["tail", prev_dir],
-            (self.SCALE * prev_x, self.SCALE * prev_y),
-        )
+        if prev_dir is not None:
+            self.image.blit(
+                self.snake_images["tail", prev_dir],
+                (self.scale * prev_x, self.scale * prev_y),
+            )
+        else:
+            # Handle length 1 snake
+            self.image.blit(
+                self.snake_images["head", self.snake.direction],
+                (self.scale * prev_x, self.scale * prev_y),
+            )
