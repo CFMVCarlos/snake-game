@@ -41,7 +41,7 @@ class SnakeGame:
     scale : int
         Pixel scale multiplier for each cell.
     two_player : bool
-        Whether to initialize in two-player mode (Arrows vs WASD), by default True.
+        Whether to initialize in two-player mode (Arrows vs WASD), by default False.
 
     Attributes
     ----------
@@ -97,7 +97,7 @@ class SnakeGame:
         height: int = 30,
         scale: int = 20,
         *,
-        two_player: bool = True,
+        two_player: bool = False,
     ) -> None:
         self.width = width
         self.height = height
@@ -139,7 +139,7 @@ class SnakeGame:
 
         self.running: bool = True
         self.state: GameState = GameState.MENU
-        self.menu_selection: int = 2 if two_player else 1
+        self.menu_selection: int = MODE_VERSUS if two_player else MODE_SOLO
         self.winner: int | None = None
 
         self.start_game(two_player=two_player)
@@ -652,7 +652,7 @@ def main(
     height: int = 30,
     scale: int = 20,
     *,
-    two_player: bool = True,
+    two_player: bool = False,
 ) -> None:
     """Launch the Snake game with designated grid dimensions.
 
@@ -665,7 +665,7 @@ def main(
     scale : int
         Pixel scale multiplier for each cell.
     two_player : bool
-        Whether to enable two-player multiplayer.
+        Whether to enable two-player multiplayer, by default False.
     """
     game = SnakeGame(width=width, height=height, scale=scale, two_player=two_player)
     game.run()

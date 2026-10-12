@@ -144,11 +144,15 @@ def test_snake_sprite_safe_render() -> None:
 
 def test_start_screen_navigation_and_mode_selection() -> None:
     """Verify start screen navigation and game mode initialization."""
-    game = SnakeGame(20, 20, 10, two_player=True)
+    game = SnakeGame(20, 20, 10)
     assert game.get_state() == GameState.MENU
+    assert game.menu_selection == MODE_SOLO
+
+    # Navigate to versus
+    game._handle_key(pygame.K_DOWN)
     assert game.menu_selection == MODE_VERSUS
 
-    # Select solo
+    # Navigate back to solo
     game._handle_key(pygame.K_UP)
     assert game.menu_selection == MODE_SOLO
 
@@ -161,7 +165,7 @@ def test_start_screen_navigation_and_mode_selection() -> None:
     game._handle_key(pygame.K_m)
     assert game.get_state() == GameState.MENU
 
-    # Select versus and start
+    # Select versus with hotkey 2 and start
     game._handle_key(pygame.K_2)
     assert game.get_state() == GameState.PLAYING
     assert len(game.snakes) == 2
