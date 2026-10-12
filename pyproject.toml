@@ -1,9 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "snake-game"
 version = "0.1.0"
 description = "A classic Snake game implemented in Python using Pygame, supporting multiplayer."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 keywords = ["game", "snake", "pygame", "python", "multiplayer"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -13,60 +17,48 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Games/Entertainment :: Arcade",
 ]
-license = "MIT"
+license = { text = "MIT" }
 dependencies = ["pygame>=2.6.1"]
 authors = [{ name = "Carlos Valente", email = "cfmvcarlos@gmail.com" }]
 
 [dependency-groups]
 dev = [
-    "pytest~=9.0.0",       # Testing framework
-    "pytest-cov~=7.0.0",   # Coverage plugin for pytest
-    "mypy~=1.18.0",        # Static type checker
-    "ruff~=0.14.0",        # Fast Python linter
-    "pydoclint~=0.8.0",    # Docstring linter
-    "pytest-xdist~=3.8.0", # Parallel test execution
-    "ty>=0.0.86",          # Astral type checker
+    "basedpyright>=1.28.0",
+    "pydoclint>=0.6.0",
+    "pytest>=9.0.0",
+    "pytest-cov>=7.0.0",
+    "pytest-xdist>=3.8.0",
+    "ruff>=0.14.0",
+    "ty>=0.0.86",
 ]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/snake_game"]
 
 [tool.ruff]
 line-length = 88
-lint.select = ["ALL"]
-lint.ignore = ["CPY", "FIX", "TD", "COM812", "ISC001", "E501"]
-lint.pydocstyle.convention = "numpy"
 preview = true
 
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["CPY", "FIX", "TD", "COM812", "ISC001", "E501"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101", "PLR2004", "INP001", "SLF001"] # Allow assert statements, magic numbers, and internal member access in tests
+"tests/*" = ["S101", "PLR2004", "INP001", "SLF001", "ANN", "D"]
 
-
-[tool.mypy]
-# Import discovery
-files = ["."]
-exclude = ["^build/", "^dist/"]
-# Platform configuration
-python_version = "3.13"
-# Disallow dynamic typing
-disallow_any_generics = true
-# Untyped definitions and calls
-disallow_untyped_defs = true
-check_untyped_defs = true
-# Configuring warnings
-warn_redundant_casts = true
-warn_unused_ignores = true
-warn_return_any = true
-# Miscellaneous strictness flags
-strict_equality = true
-strict = true
-# Configuring error messages
-show_error_context = true
-show_column_numbers = true
-pretty = true
+[tool.basedpyright]
+pythonVersion = "3.13"
+typeCheckingMode = "standard"
+reportInvalidTypeArguments = false
 
 [tool.pytest.ini_options]
 minversion = "9.0"
 addopts = "-ra -q -n auto"
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]
 
 [tool.coverage]
 run.branch = true
@@ -77,9 +69,9 @@ report.skip_covered = true
 report.sort = "cover"
 
 [tool.pydoclint]
-exclude = ".git|.tox|.venv|build|dist|.uv-cache|.mypy_cache|.ruff_cache"
+exclude = ".git|.tox|.venv|build|dist|.uv-cache|.ruff_cache"
 skip-checking-short-docstrings = false
 check-style-mismatch = true
-check-arg-defaults = false
+check-arg-defaults = true
 show-filenames-in-every-violation-message = true
 check-class-attributes = false

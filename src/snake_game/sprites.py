@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING, Final
 
 import pygame
 
-from common import Directions
-from spritesheet import SpriteSheet
+from snake_game.common import Directions
+from snake_game.spritesheet import SpriteSheet
 
 if TYPE_CHECKING:
-    from food import Food
-    from snake import Snake
+    from snake_game.food import Food
+    from snake_game.snake import Snake
 
 CELL_SIZE: Final[int] = 64
 
@@ -44,6 +44,9 @@ class FoodSprite(pygame.sprite.Sprite):
         Bounding rectangle of the surface layer.
     """
 
+    image: pygame.Surface
+    rect: pygame.Rect
+
     def __init__(
         self,
         food: Food,
@@ -64,10 +67,10 @@ class FoodSprite(pygame.sprite.Sprite):
             raw_food, (scale, scale)
         )
 
-        self.image: pygame.Surface = pygame.Surface(
+        self.image = pygame.Surface(
             [width * scale, height * scale], pygame.SRCALPHA
         ).convert_alpha()
-        self.rect: pygame.Rect = self.image.get_rect()
+        self.rect = self.image.get_rect()
         self.update()
 
     def update(self) -> None:
@@ -106,6 +109,9 @@ class SnakeSprite(pygame.sprite.Sprite):
     rect : pygame.Rect
         Bounding rectangle of the surface layer.
     """
+
+    image: pygame.Surface
+    rect: pygame.Rect
 
     def __init__(
         self,
@@ -166,10 +172,10 @@ class SnakeSprite(pygame.sprite.Sprite):
             for key, (col, row) in snake_map.items()
         }
 
-        self.image: pygame.Surface = pygame.Surface(
+        self.image = pygame.Surface(
             [width * scale, height * scale], pygame.SRCALPHA
         ).convert_alpha()
-        self.rect: pygame.Rect = self.image.get_rect()
+        self.rect = self.image.get_rect()
         self.update()
 
     @staticmethod

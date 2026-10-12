@@ -5,10 +5,10 @@ from __future__ import annotations
 import pygame
 import pytest
 
-from common import Directions, GameState
-from food import Food, Spawner
-from inputhandler import InputHandler
-from main import (
+from snake_game.common import Directions, GameState
+from snake_game.food import Food, Spawner
+from snake_game.inputhandler import InputHandler
+from snake_game.main import (
     MODE_SOLO,
     MODE_VERSUS,
     WINNER_DRAW,
@@ -16,9 +16,9 @@ from main import (
     WINNER_PLAYER_2,
     SnakeGame,
 )
-from scoreboard import Scoreboard
-from snake import Snake
-from sprites import SnakeSprite
+from snake_game.scoreboard import Scoreboard
+from snake_game.snake import Snake
+from snake_game.sprites import SnakeSprite
 
 
 @pytest.fixture(scope="session", autouse=True)

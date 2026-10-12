@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import logging
 
-from common import CONTROLS_ARROWS, CONTROLS_WASD, Controls, Directions
-from scoreboard import Scoreboard
+from snake_game.common import CONTROLS_ARROWS, CONTROLS_WASD, Controls, Directions
+from snake_game.scoreboard import Scoreboard
 
 logger = logging.getLogger(__name__)
 
@@ -15,11 +15,11 @@ class Snake:
 
     Parameters
     ----------
-    body : list[tuple[int, int]] | None
+    body : list[tuple[int, int]] | None, default=None
         Initial coordinates list for snake segments, by default empty.
-    controls : int
+    controls : int, default=1
         Input scheme identifier (1 for Arrow keys, 2 for WASD).
-    color : tuple[int, ...] | None
+    color : tuple[int, ...] | None, default=None
         RGB color tuple for the snake sprite, or None for default.
 
     Attributes
@@ -62,7 +62,7 @@ class Snake:
 
         Parameters
         ----------
-        direction : Directions | None
+        direction : Directions | None, default=None
             Optional new direction vector to adopt before moving.
         """
         if direction is not None:

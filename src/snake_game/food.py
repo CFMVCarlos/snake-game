@@ -10,13 +10,13 @@ class Food:
 
     Parameters
     ----------
-    start_width : int
+    start_width : int, default=0
         Minimum horizontal cell coordinate.
-    stop_width : int
+    stop_width : int, default=0
         Maximum horizontal cell coordinate.
-    start_height : int
+    start_height : int, default=0
         Minimum vertical cell coordinate.
-    stop_height : int
+    stop_height : int, default=0
         Maximum vertical cell coordinate.
 
     Attributes

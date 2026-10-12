@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pygame
 
-from common import Directions
+from snake_game.common import Directions
 
 
 class InputHandler:

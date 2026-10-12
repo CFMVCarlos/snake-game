@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pygame
 
-import colors
+from snake_game import colors
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ class SpriteSheet:
         ----------
         rectangle : tuple[int, int, int, int]
             Bounding box tuple (x, y, width, height) on the master sheet.
-        colorkey : int | tuple[int, int, int] | pygame.Color | None
+        colorkey : int | tuple[int, int, int] | pygame.Color | None, default=None
             Optional color key for transparent pixels, or -1 for top-left pixel.
 
         Returns
@@ -87,7 +87,7 @@ class SpriteSheet:
         ----------
         rects : list[tuple[int, int, int, int]]
             List of bounding box tuples to extract.
-        colorkey : int | tuple[int, int, int] | pygame.Color | None
+        colorkey : int | tuple[int, int, int] | pygame.Color | None, default=None
             Optional color key for transparency.
 
         Returns
@@ -111,7 +111,7 @@ class SpriteSheet:
             Initial sprite bounding box (x, y, width, height).
         image_count : int
             Number of consecutive sprites in the horizontal strip.
-        colorkey : int | tuple[int, int, int] | pygame.Color | None
+        colorkey : int | tuple[int, int, int] | pygame.Color | None, default=None
             Optional color key for transparency.
 
         Returns
