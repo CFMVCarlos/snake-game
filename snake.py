@@ -28,6 +28,8 @@ class Snake:
         Ordered coordinate tuples representing the snake segments from head to tail.
     direction : Directions
         Current directional movement vector.
+    next_direction : Directions
+        Queued directional movement vector for the subsequent tick.
     snake_length : int
         Target length of the snake body.
     dead : bool
@@ -48,6 +50,7 @@ class Snake:
     ) -> None:
         self.snake_body: list[tuple[int, int]] = list(body) if body is not None else []
         self.direction: Directions = Directions.RIGHT
+        self.next_direction: Directions = Directions.RIGHT
         self.snake_length: int = len(self.snake_body)
         self.dead: bool = False
         self.color: tuple[int, ...] | None = color
@@ -64,6 +67,9 @@ class Snake:
         """
         if direction is not None:
             self.direction = direction
+            self.next_direction = direction
+        else:
+            self.direction = self.next_direction
 
         if not self.snake_body:
             return
@@ -189,6 +195,13 @@ class Snake:
         bool
             True if movement is legal, False if it directly reverses course.
         """
+        if len(self.snake_body) > 1:
+            head_x, head_y = self.snake_body[0]
+            neck_x, neck_y = self.snake_body[1]
+            dir_x, dir_y = direction.value
+            if (head_x + dir_x, head_y + dir_y) == (neck_x, neck_y):
+                return False
+
         return not (
             (self.direction == Directions.RIGHT and direction == Directions.LEFT)
             or (self.direction == Directions.LEFT and direction == Directions.RIGHT)

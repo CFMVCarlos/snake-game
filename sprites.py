@@ -141,12 +141,16 @@ class SnakeSprite(pygame.sprite.Sprite):
             (Directions.UP, Directions.LEFT): (2, 0),
             (Directions.UP, Directions.UP): (2, 1),
             (Directions.DOWN, Directions.DOWN): (2, 1),
+            (Directions.UP, Directions.DOWN): (2, 1),
+            (Directions.DOWN, Directions.UP): (2, 1),
             (Directions.RIGHT, Directions.UP): (2, 2),
             (Directions.DOWN, Directions.LEFT): (2, 2),
             ("tail", Directions.UP): (4, 3),
             ("tail", Directions.DOWN): (3, 2),
             ("tail", Directions.RIGHT): (3, 3),
             ("tail", Directions.LEFT): (4, 2),
+            (Directions.LEFT, Directions.RIGHT): (1, 0),
+            (Directions.RIGHT, Directions.LEFT): (1, 0),
         }
 
         self.snake_images: dict[
@@ -236,8 +240,12 @@ class SnakeSprite(pygame.sprite.Sprite):
             else:
                 image_key = (prev_dir, direction)
 
+            segment_img = self.snake_images.get(
+                image_key,
+                self.snake_images[Directions.LEFT, Directions.LEFT],
+            )
             self.image.blit(
-                self.snake_images[image_key],
+                segment_img,
                 (self.scale * prev_x, self.scale * prev_y),
             )
 
@@ -246,12 +254,20 @@ class SnakeSprite(pygame.sprite.Sprite):
 
         # Draw tail or single-cell head
         if prev_dir is not None:
+            tail_img = self.snake_images.get(
+                ("tail", prev_dir),
+                self.snake_images["tail", Directions.LEFT],
+            )
             self.image.blit(
-                self.snake_images["tail", prev_dir],
+                tail_img,
                 (self.scale * prev_x, self.scale * prev_y),
             )
         else:
+            head_img = self.snake_images.get(
+                ("head", self.snake.direction),
+                self.snake_images["head", Directions.RIGHT],
+            )
             self.image.blit(
-                self.snake_images["head", self.snake.direction],
+                head_img,
                 (self.scale * prev_x, self.scale * prev_y),
             )

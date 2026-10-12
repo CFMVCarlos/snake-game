@@ -10,6 +10,7 @@ from food import Food, Spawner
 from inputhandler import InputHandler
 from scoreboard import Scoreboard
 from snake import Snake
+from sprites import SnakeSprite
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -122,3 +123,12 @@ def test_input_handler() -> None:
     assert handler.handle_input(pygame.K_UP) == (pygame.K_UP, Directions.UP)
     assert handler.handle_input(pygame.K_d) == (pygame.K_d, Directions.RIGHT)
     assert handler.handle_input(pygame.K_SPACE) == (pygame.K_SPACE, None)
+
+
+def test_snake_sprite_safe_render() -> None:
+    """Verify snake sprite renders safely even when self-colliding."""
+    pygame.display.set_mode((200, 200))
+    snake = Snake(body=[(10, 10), (10, 9), (10, 10)], controls=1)
+    sprite = SnakeSprite(snake, 20, 20, 10)
+    sprite.update()
+    assert sprite.image.get_width() == 200

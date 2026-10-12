@@ -223,7 +223,7 @@ class SnakeGame:
                     and snake.confirm_key_input(cmd_key)
                     and snake.check_movement(direction)
                 ):
-                    snake.direction = direction
+                    snake.next_direction = direction
 
     def handle_events(self) -> None:
         """Process Pygame user input events."""
