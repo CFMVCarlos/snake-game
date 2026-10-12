@@ -17,6 +17,15 @@ class Directions(Enum):
     RIGHT = (1, 0)
 
 
+class GameState(Enum):
+    """Lifecycle states for the snake game session."""
+
+    MENU = "menu"
+    PLAYING = "playing"
+    PAUSED = "paused"
+    GAME_OVER = "game_over"
+
+
 class Controls:
     """Keybinding collections for player input configurations.
 

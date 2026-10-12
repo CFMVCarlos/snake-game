@@ -5,9 +5,17 @@ from __future__ import annotations
 import pygame
 import pytest
 
-from common import Directions
+from common import Directions, GameState
 from food import Food, Spawner
 from inputhandler import InputHandler
+from main import (
+    MODE_SOLO,
+    MODE_VERSUS,
+    WINNER_DRAW,
+    WINNER_PLAYER_1,
+    WINNER_PLAYER_2,
+    SnakeGame,
+)
 from scoreboard import Scoreboard
 from snake import Snake
 from sprites import SnakeSprite
@@ -132,3 +140,77 @@ def test_snake_sprite_safe_render() -> None:
     sprite = SnakeSprite(snake, 20, 20, 10)
     sprite.update()
     assert sprite.image.get_width() == 200
+
+
+def test_start_screen_navigation_and_mode_selection() -> None:
+    """Verify start screen navigation and game mode initialization."""
+    game = SnakeGame(20, 20, 10, two_player=True)
+    assert game.get_state() == GameState.MENU
+    assert game.menu_selection == MODE_VERSUS
+
+    # Select solo
+    game._handle_key(pygame.K_UP)
+    assert game.menu_selection == MODE_SOLO
+
+    # Start solo match
+    game._handle_key(pygame.K_RETURN)
+    assert game.get_state() == GameState.PLAYING
+    assert len(game.snakes) == 1
+
+    # Return to menu with M key
+    game._handle_key(pygame.K_m)
+    assert game.get_state() == GameState.MENU
+
+    # Select versus and start
+    game._handle_key(pygame.K_2)
+    assert game.get_state() == GameState.PLAYING
+    assert len(game.snakes) == 2
+
+
+def test_versus_snake_mutual_collisions() -> None:
+    """Verify collision between two players awards victory to the survivor."""
+    game = SnakeGame(20, 20, 10, two_player=True)
+    game.start_game(two_player=True)
+    snake1, snake2 = game.snakes[0], game.snakes[1]
+
+    # Player 1 crashes into Player 2's body
+    snake1.snake_body = [(5, 5), (4, 5)]
+    snake2.snake_body = [(10, 10), (5, 5)]
+    game.check_snake_collisions()
+    assert snake1.dead is True
+    assert snake2.dead is False
+
+    game._update_match_status()
+    assert game.get_state() == GameState.GAME_OVER
+    assert game.winner == WINNER_PLAYER_2
+
+    # Reset and test Player 2 crashing into Player 1's body
+    game.start_game(two_player=True)
+    s1, s2 = game.snakes[0], game.snakes[1]
+    s1.snake_body = [(10, 10), (5, 5)]
+    s2.snake_body = [(5, 5), (4, 5)]
+    game.check_snake_collisions()
+    assert s1.dead is False
+    assert s2.dead is True
+
+    game._update_match_status()
+    assert game.get_state() == GameState.GAME_OVER
+    assert game.winner == WINNER_PLAYER_1
+
+
+def test_versus_head_on_collision_draw() -> None:
+    """Verify simultaneous head-on collision results in a draw."""
+    game = SnakeGame(20, 20, 10, two_player=True)
+    game.start_game(two_player=True)
+    snake1, snake2 = game.snakes[0], game.snakes[1]
+
+    # Both heads on same grid cell
+    snake1.snake_body = [(5, 5), (4, 5)]
+    snake2.snake_body = [(5, 5), (6, 5)]
+    game.check_snake_collisions()
+    assert snake1.dead is True
+    assert snake2.dead is True
+
+    game._update_match_status()
+    assert game.get_state() == GameState.GAME_OVER
+    assert game.winner == WINNER_DRAW

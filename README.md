@@ -29,13 +29,14 @@ The project features a decoupled object-oriented architecture (`SnakeGame`), har
 
 ## ✨ Features
 
-- 👥 **Local 2-Player Multiplayer:** Compete head-to-head with Player 1 (Blue snake, Arrow keys) and Player 2 (Red snake, WASD keys).
+- 🖥️ **Interactive Start Screen:** Choose between **1 Player (Solo)** and **2 Players (Versus)** with keyboard navigation or direct hotkeys.
+- 👥 **Versus Mode with Player Collisions & Win Condition:** Head-to-head competition where colliding with the opponent's body or self-colliding causes failure, declaring the surviving player the winner!
 - 🎨 **Sprite-Based Graphics & Alpha Transparency:** Smooth rendering of snake head, turning body segments, and tail sprites loaded from an authentic spritesheet with alpha channel support.
 - 🎵 **Audio & Sound Effects:** Dynamic crunch sound effects on eating food and looping retro background soundtrack.
 - ⏸️ **Interactive HUD & Overlays:**
+  - Dedicated **Start Screen** mode picker.
   - Clear **PAUSED** overlay banner when pausing with <kbd>Space</kbd>.
-  - **GAME OVER** screen announcing the conclusion of the match.
-  - One-touch instant restart with <kbd>R</kbd>.
+  - **Victory & Game Over** screens announcing the winning player with immediate rematch (<kbd>R</kbd>) or main menu (<kbd>M</kbd>).
 - 🪟 **Wrapping Boundaries & Self-Collision:** Seamless toroidal screen wrapping with realistic collision detection.
 - ⚡ **High-Performance Architecture:** Pure C-accelerated surface blending via `pygame.BLEND_RGBA_ADD` and vectorized coordinate updates.
 
@@ -43,13 +44,17 @@ The project features a decoupled object-oriented architecture (`SnakeGame`), har
 
 ## 🎮 Controls & Keybindings
 
-| Action | Control / Keybinding | Description |
+| Mode / Context | Control / Keybinding | Description |
 | :--- | :--- | :--- |
+| **Start Screen** | <kbd>▲</kbd> / <kbd>▼</kbd> or <kbd>W</kbd> / <kbd>S</kbd> | Navigate mode selection between 1 Player and 2 Players. |
+| **Start Screen** | <kbd>1</kbd> or <kbd>2</kbd> | Instantly select and start 1-Player or 2-Player mode. |
+| **Start Screen** | <kbd>Enter</kbd> / <kbd>Space</kbd> | Confirm selected mode and launch match. |
 | **Player 1 Movement** | <kbd>▲</kbd> <kbd>▼</kbd> <kbd>◄</kbd> <kbd>►</kbd> | Controls the Blue snake direction (Up, Down, Left, Right). |
 | **Player 2 Movement** | <kbd>W</kbd> <kbd>S</kbd> <kbd>A</kbd> <kbd>D</kbd> | Controls the Red snake direction (Up, Down, Left, Right). |
 | **Play / Pause** | <kbd>Space</kbd> | Toggles pause state during active gameplay. |
-| **Restart Game** | <kbd>R</kbd> | Resets board, snakes, food, and scores immediately. |
-| **Exit** | <kbd>Esc</kbd> or Window Close | Closes the game cleanly. |
+| **Restart / Rematch** | <kbd>R</kbd> | Resets board and starts an immediate rematch in current mode. |
+| **Main Menu** | <kbd>M</kbd> | Returns to the Start Screen to switch modes. |
+| **Exit** | <kbd>Esc</kbd> or Window Close | Exits to Menu or closes the game cleanly. |
 
 ---
 

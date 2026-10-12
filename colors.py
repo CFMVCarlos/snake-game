@@ -13,6 +13,7 @@ GRAY: Final[tuple[int, int, int]] = (127, 127, 127)
 RED: Final[tuple[int, int, int]] = (255, 0, 0)
 GREEN: Final[tuple[int, int, int]] = (0, 255, 0)
 BLUE: Final[tuple[int, int, int]] = (0, 0, 255)
+YELLOW: Final[tuple[int, int, int]] = (255, 215, 0)
 
 
 def change_color(

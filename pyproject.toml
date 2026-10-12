@@ -36,7 +36,7 @@ lint.pydocstyle.convention = "numpy"
 preview = true
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101", "PLR2004", "INP001"] # Allow assert statements and magic numbers in tests
+"tests/*" = ["S101", "PLR2004", "INP001", "SLF001"] # Allow assert statements, magic numbers, and internal member access in tests
 
 
 [tool.mypy]
