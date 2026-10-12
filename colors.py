@@ -1,30 +1,49 @@
-"""Color definitions and utilities."""
+"""Color definitions and graphical surface blending utilities."""
+
+from __future__ import annotations
+
+from typing import Final
 
 import pygame
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GRAY = (127, 127, 127)
-
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
+# Standard RGB color tuples
+BLACK: Final[tuple[int, int, int]] = (0, 0, 0)
+WHITE: Final[tuple[int, int, int]] = (255, 255, 255)
+GRAY: Final[tuple[int, int, int]] = (127, 127, 127)
+RED: Final[tuple[int, int, int]] = (255, 0, 0)
+GREEN: Final[tuple[int, int, int]] = (0, 255, 0)
+BLUE: Final[tuple[int, int, int]] = (0, 0, 255)
 
 
 def change_color(
-    surface: pygame.Surface, color: tuple[int, ...], width: int, height: int,
+    surface: pygame.Surface,
+    color: tuple[int, ...],
+    width: int,
+    height: int,
 ) -> pygame.Surface:
-    """
-    Optimized color addition using Pygame's native C-accelerated BLEND_RGBA_ADD.
+    """Apply uniform color blending using Pygame native BLEND_RGBA_ADD.
 
-    Significantly faster than O(W*H) pixel-by-pixel iterations in Python.
+    Performs accelerated hardware blending instead of pixel-by-pixel Python iterations.
+
+    Parameters
+    ----------
+    surface : pygame.Surface
+        The target surface to transform.
+    color : tuple[int, ...]
+        RGB color tuple to add to the surface pixels.
+    width : int
+        Width of the target area to fill.
+    height : int
+        Height of the target area to fill.
 
     Returns
     -------
     pygame.Surface
-        The updated surface.
+        The modified surface with blended colors.
     """
     surface.fill(
-        (*color, 0), rect=(0, 0, width, height), special_flags=pygame.BLEND_RGBA_ADD,
+        (*color, 0),
+        rect=(0, 0, width, height),
+        special_flags=pygame.BLEND_RGBA_ADD,
     )
     return surface

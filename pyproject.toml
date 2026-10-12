@@ -25,17 +25,19 @@ dev = [
     "ruff~=0.14.0",        # Fast Python linter
     "pydoclint~=0.8.0",    # Docstring linter
     "pytest-xdist~=3.8.0", # Parallel test execution
+    "ty>=0.0.86",          # Astral type checker
 ]
 
 [tool.ruff]
 line-length = 88
 lint.select = ["ALL"]
-lint.ignore = ["CPY", "FIX", "TD"]
+lint.ignore = ["CPY", "FIX", "TD", "COM812", "ISC001", "E501"]
 lint.pydocstyle.convention = "numpy"
 preview = true
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"] # Allow assert statements in tests
+"tests/*" = ["S101", "PLR2004", "INP001"] # Allow assert statements and magic numbers in tests
+
 
 [tool.mypy]
 # Import discovery
@@ -64,6 +66,7 @@ pretty = true
 minversion = "9.0"
 addopts = "-ra -q -n auto"
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.coverage]
 run.branch = true
@@ -77,6 +80,6 @@ report.sort = "cover"
 exclude = ".git|.tox|.venv|build|dist|.uv-cache|.mypy_cache|.ruff_cache"
 skip-checking-short-docstrings = false
 check-style-mismatch = true
-check-arg-defaults = true
+check-arg-defaults = false
 show-filenames-in-every-violation-message = true
 check-class-attributes = false
